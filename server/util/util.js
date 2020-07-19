@@ -1,8 +1,8 @@
 const createMessage = (user, message) => {
 
     return {
-        user,
-        messaje,
+        nombre: user,
+        message,
         date: new Date().getTime()
     };
 };

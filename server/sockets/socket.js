@@ -19,18 +19,20 @@ io.on('connection', (userSocket) => {
         let personas = usuarios.addUser(userSocket.id, data.nombre, data.sala);
         let usersPorSala = usuarios.getUsersPorSala(data.sala);
 
-        clientInformation.broadcast.to(data.sala).emit('usersList', usersPorSala);
-
+        userSocket.broadcast.to(data.sala).emit('usersList', usersPorSala);
+        userSocket.broadcast.to(data.sala).emit('notification', createMessage('Administrador', `${data.nombre} se unió al chat`));
         callback(usersPorSala);
     });
 
 
-    userSocket.on('createMessage', (data) => {
+    userSocket.on('createMessage', (data, callback) => {
 
         let persona = usuarios.getUser(userSocket.id);
 
         let message = createMessage(persona.nombre, data.message);
         userSocket.broadcast.to(persona.sala).emit('createMessage', message);
+
+        callback(message);
     });
 
     userSocket.on('disconnect', () => {

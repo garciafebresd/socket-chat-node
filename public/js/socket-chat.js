@@ -13,6 +13,10 @@ var usuario = {
 
 socket.on('connect', function() {
     console.log('Conectado al servidor');
+
+    socket.emit('entrarChat', usuario, function(users) {
+        renderUsers(users);
+    });
 });
 
 // escuchar
@@ -20,34 +24,19 @@ socket.on('disconnect', function() {
     console.log('Perdimos conexión con el servidor');
 });
 
-
-socket.emit('entrarChat', usuario, function(resp) {
-    console.log('Usuarios conectados', resp);
-});
-
 // Escuchar información
-socket.on('notification', function(mensaje) {
-    console.log('Servidor:', mensaje);
+socket.on('notification', function(message) {
+    renderMessage(message, false);
 });
 
-socket.on('usersList', function(usuarios) {
-    console.log('Usuarios:', usuarios);
+socket.on('usersList', function(users) {
+    renderUsers(users);
 });
 
 socket.on('createMessage', function(message) {
-    console.log('Message:', message);
+    renderMessage(message, false);
 });
 
 socket.on('privateMessage', function(message) {
     console.log('Private, messaje', message);
 });
-
-
-
-// // Enviar información
-// socket.emit('enviarMensaje', {
-//     usuario: 'Fernando',
-//     mensaje: 'Hola Mundo'
-// }, function(resp) {
-//     console.log('respuesta server: ', resp);
-// });
